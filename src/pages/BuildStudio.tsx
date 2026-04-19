@@ -22,7 +22,10 @@ import {
     Bot,
     PlusCircle,
     GripVertical,
-    Library
+    Library,
+    CircleHelp,
+    Clipboard,
+    FileSearch
 } from 'lucide-react';
 import { Workshop, MaturityScoreCategory, Blueprint } from '@/types';
 import { MONDAY_READY_BLUEPRINTS } from '@/constants';
@@ -39,7 +42,6 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { getCopilotFeedback, CopilotResponse, summarizeContent } from '@/services/geminiService';
-import { FileSearch } from 'lucide-react';
 
 interface BuildStudioProps {
   workshop: Workshop | null;
@@ -145,6 +147,11 @@ export default function BuildStudio({ workshop, onUpdate }: BuildStudioProps) {
     const summary = await summarizeContent(docText, 'documentation');
     setDocSummary(summary);
     setIsSummarizing(false);
+  };
+
+  const applySummaryToWorkshop = () => {
+    if (!docSummary.trim()) return;
+    handleFieldChange('summary', '', docSummary.trim());
   };
 
   const currentStepIndex = STEPS.findIndex(s => s.id === currentStep);
@@ -300,6 +307,22 @@ export default function BuildStudio({ workshop, onUpdate }: BuildStudioProps) {
                         Reference Mirror
                     </button>
                </div>
+
+
+               <Card className="border-2 border-foreground/10 bg-card/60 rounded-none">
+                    <CardContent className="p-5 space-y-4">
+                        <div className="flex items-center gap-2">
+                            <CircleHelp className="h-4 w-4 text-accent" />
+                            <h3 className="text-xs font-black uppercase tracking-widest">Build Studio Schnellanleitung</h3>
+                        </div>
+                        <ol className="list-decimal pl-5 space-y-1 text-xs font-bold text-foreground/70">
+                            <li>Workshop im <span className="font-black">Library</span>-Bereich öffnen.</li>
+                            <li>Links Kapitel wählen und im Modus <span className="font-black">Edit / Build</span> Felder ausfüllen.</li>
+                            <li>Mit <span className="font-black">Ask Architecture AI</span> konkrete Empfehlungen je Kapitel holen.</li>
+                            <li><span className="font-black">Save Board</span> nutzen, damit Änderungen versioniert bleiben.</li>
+                        </ol>
+                    </CardContent>
+               </Card>
 
                {viewMode === 'edit' ? (
                    <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
@@ -462,6 +485,55 @@ export default function BuildStudio({ workshop, onUpdate }: BuildStudioProps) {
                             <div className="text-[11px] font-bold text-foreground bg-accent/5 p-6 border-l-4 border-accent italic leading-relaxed">
                                 "{copilotData.critique}"
                             </div>
+                        </div>
+                    )}
+                </div>
+
+
+                <div className="space-y-4 border-t-2 border-border pt-8">
+                    <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-foreground italic">Studio Tool Verbesserung</span>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setShowDocSummarizer(v => !v)}
+                            className="h-8 px-2 text-[10px] font-black uppercase tracking-widest rounded-none"
+                        >
+                            <FileSearch className="h-3.5 w-3.5 mr-1" /> {showDocSummarizer ? 'Hide' : 'Show'}
+                        </Button>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground font-bold leading-snug">
+                        Neue Funktion: Dokumente direkt im Studio zusammenfassen und als Workshop-Zusammenfassung übernehmen.
+                    </p>
+                    {showDocSummarizer && (
+                        <div className="space-y-3 p-4 border-2 border-foreground/10 bg-background">
+                            <Label htmlFor="doc-summarizer" className="text-[10px] font-black uppercase tracking-widest">Input Dokument</Label>
+                            <Textarea
+                                id="doc-summarizer"
+                                value={docText}
+                                onChange={(e) => setDocText(e.target.value)}
+                                placeholder="Hier z. B. Kundenbriefing, Notizen oder Protokoll einfügen..."
+                                className="min-h-28 rounded-none"
+                            />
+                            <Button
+                                onClick={handleSummarizeDoc}
+                                disabled={!docText.trim() || isSummarizing}
+                                className="w-full h-9 rounded-none text-[10px] font-black uppercase tracking-widest"
+                            >
+                                {isSummarizing ? 'Summarizing...' : 'Dokument zusammenfassen'}
+                            </Button>
+                            {docSummary && (
+                                <div className="space-y-3">
+                                    <div className="text-[11px] leading-relaxed font-bold text-foreground/80 border-l-2 border-accent pl-3">{docSummary}</div>
+                                    <Button
+                                        variant="outline"
+                                        onClick={applySummaryToWorkshop}
+                                        className="w-full h-9 rounded-none text-[10px] font-black uppercase tracking-widest"
+                                    >
+                                        <Clipboard className="h-3.5 w-3.5 mr-1" /> In Workshop Summary übernehmen
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>

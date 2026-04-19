@@ -118,6 +118,26 @@ export default function Home({ onNewWorkshop, onOpenWorkshop, onNavigateToRefere
           </Card>
         </div>
 
+
+        <section className="space-y-6">
+          <div className="flex items-center justify-between gap-4">
+            <h2 className="text-3xl font-black uppercase tracking-tighter italic">Studio Tool – Genaue Anleitung</h2>
+            <Badge className="rounded-none border-2 border-foreground bg-background text-foreground font-black uppercase">Schnellstart</Badge>
+          </div>
+
+          <Card className="border-2 border-foreground rounded-none shadow-none">
+            <CardContent className="p-8">
+              <ol className="list-decimal pl-6 space-y-3 text-sm font-bold text-foreground/80">
+                <li><span className="font-black">Neuen Workshop anlegen</span> über <em>New Workshop</em> oder vorhandenen Draft in der Library öffnen.</li>
+                <li><span className="font-black">Build Studio nutzen:</span> Kapitel links nacheinander ausfüllen (Identity → Review) und regelmäßig <em>Save Board</em> klicken.</li>
+                <li><span className="font-black">AI Diagnose:</span> In der rechten Spalte <em>Ask Architecture AI</em> für konkrete Verbesserungsvorschläge pro Kapitel starten.</li>
+                <li><span className="font-black">Dokumente verdichten:</span> Die neue Funktion <em>Studio Tool Verbesserung</em> fasst Briefings zusammen und übernimmt die Summary direkt ins Workshop-Objekt.</li>
+                <li><span className="font-black">Asset Studio:</span> Infosheet / Proposal / Delivery Brief generieren, dann per <em>Copy</em> oder <em>.md</em>-Download direkt im Frontend weiterverwenden.</li>
+              </ol>
+            </CardContent>
+          </Card>
+        </section>
+
         {/* Recent Activity / Red Flags */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <section className="space-y-4">
