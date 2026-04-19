@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, BookOpen, ArrowRight, AlertCircle, TrendingUp, Package } from 'lucide-react';
+import { Plus, BookOpen, ArrowRight, AlertCircle, TrendingUp, Package, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -10,9 +10,10 @@ import { cn } from '@/lib/utils';
 interface HomeProps {
   onNewWorkshop: (w: Workshop) => void;
   onOpenWorkshop: (id: string) => void;
+  onNavigateToReference: () => void;
 }
 
-export default function Home({ onNewWorkshop, onOpenWorkshop }: HomeProps) {
+export default function Home({ onNewWorkshop, onOpenWorkshop, onNavigateToReference }: HomeProps) {
   const latestDrafts = MOCK_WORKSHOPS.filter(w => w.status === 'draft').slice(0, 3);
   
   const handleCreateNew = () => {
@@ -55,7 +56,12 @@ export default function Home({ onNewWorkshop, onOpenWorkshop }: HomeProps) {
             <Button onClick={handleCreateNew} size="lg" className="h-16 px-8 bg-foreground text-background hover:bg-foreground/90 rounded-none border-2 border-foreground font-black uppercase tracking-widest gap-3 shadow-[8px_8px_0px_0px_rgba(10,10,10,1)]">
               <Plus className="h-5 w-5" /> New Workshop
             </Button>
-            <Button variant="outline" size="lg" className="h-16 px-8 border-2 border-foreground rounded-none font-black uppercase tracking-widest gap-3 hover:bg-foreground/5">
+            <Button 
+                variant="outline" 
+                size="lg" 
+                onClick={onNavigateToReference}
+                className="h-16 px-8 border-2 border-foreground rounded-none font-black uppercase tracking-widest gap-3 hover:bg-foreground/5"
+            >
               <BookOpen className="h-5 w-5" /> View Reference
             </Button>
           </div>

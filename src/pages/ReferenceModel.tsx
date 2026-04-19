@@ -4,8 +4,26 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CheckCircle2, Target, Users, Layers, Zap, Box } from 'lucide-react';
+import { CheckCircle2, Target, Users, Layers, Zap, Box, ExternalLink, Link2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+function ReferenceLink({ title, desc, url }: { title: string, desc: string, url: string }) {
+    return (
+        <a 
+            href={url} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="flex items-center justify-between p-6 bg-white border-2 border-foreground hover:bg-accent/5 transition-all group rounded-none"
+        >
+            <div className="space-y-1">
+                <span className="text-[10px] font-black uppercase tracking-widest text-accent italic">Resource</span>
+                <h4 className="text-sm font-black uppercase tracking-tight">{title}</h4>
+                <p className="text-[11px] font-bold text-muted-foreground leading-tight italic">{desc}</p>
+            </div>
+            <ExternalLink className="h-5 w-5 text-foreground/20 group-hover:text-foreground transition-colors" />
+        </a>
+    );
+}
 
 export default function ReferenceModel() {
   const w = REFERENCE_WORKSHOP;
@@ -75,8 +93,11 @@ export default function ReferenceModel() {
                     <TabsTrigger value="methods" className="data-[state=active]:bg-foreground data-[state=active]:text-background rounded-none border-r-2 border-foreground gap-2 py-4 px-8 font-black uppercase tracking-widest text-[11px] italic">
                         <Zap className="h-4 w-4" /> Signature Methods
                     </TabsTrigger>
-                    <TabsTrigger value="deliverables" className="data-[state=active]:bg-foreground data-[state=active]:text-background rounded-none gap-2 py-4 px-8 font-black uppercase tracking-widest text-[11px] italic">
+                    <TabsTrigger value="deliverables" className="data-[state=active]:bg-foreground data-[state=active]:text-background rounded-none border-r-2 border-foreground gap-2 py-4 px-8 font-black uppercase tracking-widest text-[11px] italic">
                         <Box className="h-4 w-4" /> Deliverables
+                    </TabsTrigger>
+                    <TabsTrigger value="deepdive" className="data-[state=active]:bg-foreground data-[state=active]:text-background rounded-none gap-2 py-4 px-8 font-black uppercase tracking-widest text-[11px] italic">
+                        <Link2 className="h-4 w-4" /> Deep Dive References
                     </TabsTrigger>
                 </TabsList>
 
@@ -164,6 +185,40 @@ export default function ReferenceModel() {
                                         </CardHeader>
                                     </Card>
                                 ))}
+                            </div>
+                         </div>
+                    </TabsContent>
+
+                    <TabsContent value="deepdive" className="m-0 animate-in fade-in duration-300">
+                         <div className="space-y-12">
+                            <div className="p-8 border-4 border-foreground bg-accent/5">
+                                <h3 className="text-xl font-black uppercase tracking-tighter italic mb-2">Master Framework References</h3>
+                                <p className="text-sm font-bold text-foreground/60 leading-relaxed italic">
+                                    Tiefe Einblicke in die Architektur hinter dem "Monday-Ready" Framework. Diese Ressourcen bilden das theoretische und praktische Fundament unserer Produkt-Benchmarks.
+                                </p>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <ReferenceLink 
+                                    title="CompassFrameworks Master Docs" 
+                                    desc="Die zentrale Dokumentation für Workshop-Architekten." 
+                                    url="https://compassframeworks.de" 
+                                />
+                                <ReferenceLink 
+                                    title="Kanban University (STATIK)" 
+                                    desc="Der Systems Thinking Approach in der Referenzversion." 
+                                    url="https://kanban.university" 
+                                />
+                                <ReferenceLink 
+                                    title="Agile Alliance: Flow Foundations" 
+                                    desc="Grundlagen der Flow-Theorie für Produkt-Teams." 
+                                    url="https://www.agilealliance.org" 
+                                />
+                                <ReferenceLink 
+                                    title="Product Patterns v2.4" 
+                                    desc="Interne Library für wiederkehrende Workshop-Bausteine." 
+                                    url="#" 
+                                />
                             </div>
                          </div>
                     </TabsContent>

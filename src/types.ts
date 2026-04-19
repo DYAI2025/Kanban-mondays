@@ -127,6 +127,15 @@ export interface Workshop {
   lastModified: string;
 }
 
+export interface Blueprint {
+  id: string;
+  category: MaturityScoreCategory;
+  title: string;
+  description: string;
+  icon: string;
+  data: any;
+}
+
 export interface Family {
   id: string;
   name: string;

@@ -36,7 +36,13 @@ export default function App() {
   const renderPage = () => {
     switch (currentPage) {
       case 'home':
-        return <Home onNewWorkshop={handleCreateWorkshop} onOpenWorkshop={navigateToBuild} />;
+        return (
+          <Home 
+            onNewWorkshop={handleCreateWorkshop} 
+            onOpenWorkshop={navigateToBuild} 
+            onNavigateToReference={() => setCurrentPage('reference')}
+          />
+        );
       case 'reference':
         return <ReferenceModel />;
       case 'library':
@@ -52,7 +58,13 @@ export default function App() {
       case 'admin':
         return <Admin />;
       default:
-        return <Home onNewWorkshop={handleCreateWorkshop} onOpenWorkshop={navigateToBuild} />;
+        return (
+          <Home 
+            onNewWorkshop={handleCreateWorkshop} 
+            onOpenWorkshop={navigateToBuild} 
+            onNavigateToReference={() => setCurrentPage('reference')}
+          />
+        );
     }
   };
 

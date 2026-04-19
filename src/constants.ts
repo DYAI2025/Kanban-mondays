@@ -158,3 +158,62 @@ export const MOCK_WORKSHOPS: Workshop[] = [
     lastModified: new Date(Date.now() - 86400000).toISOString()
   }
 ];
+
+export const MONDAY_READY_BLUEPRINTS: any[] = [
+  {
+    id: 'bp-operational-outcome',
+    category: 'outcome',
+    title: 'Operational Readiness',
+    description: 'Ensure the team can actually work on Monday.',
+    icon: 'Target',
+    data: {
+      capabilities: ['Team knows the next 3 steps', 'Team handles basic flow'],
+      artifacts: ['Visual Board Design', 'Initial WIP limits'],
+      successCriteria: ['Team agreements signed off']
+    }
+  },
+  {
+    id: 'bp-penny-game',
+    category: 'methods',
+    title: 'The Penny Game',
+    description: 'Classic simulation for experiencing WIP and flow bottlenecks.',
+    icon: 'Zap',
+    data: {
+      signatureMethods: ['The Penny Game (Batch Size Simulation)'],
+      experientialAnchor: 'Batch vs Flow Experience'
+    }
+  },
+  {
+    id: 'bp-30-day-guide',
+    category: 'deliverables',
+    title: '30-Day Guide',
+    description: 'A concrete handover document for the team.',
+    icon: 'Box',
+    data: {
+      teamArtifacts: ['30-Day Launch Roadmap'],
+      handoverDocs: ['The "First 30 Days" Operational Guide']
+    }
+  },
+  {
+    id: 'bp-pm-fit',
+    category: 'audience',
+    title: 'PM & Dev Alignment',
+    description: 'Targeted for matching product and engineering goals.',
+    icon: 'Users',
+    data: {
+      primary: ['Product Managers', 'Engineering Leads'],
+      nonFit: ['Sales teams without technical overlap']
+    }
+  },
+  {
+    id: 'bp-hard-boundaries',
+    category: 'scope',
+    title: 'Hard Boundaries',
+    description: 'Standard scope list to prevent project sprawl.',
+    icon: 'Layers',
+    data: {
+      inScope: ['Core Process Design', 'KPI definition'],
+      outOfScope: ['Tool customization', 'Performance reviews']
+    }
+  }
+];

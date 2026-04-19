@@ -119,6 +119,13 @@ export default function Layout({ currentPage, onPageChange, children }: LayoutPr
                 </div>
               )}
             </div>
+            {!isSidebarCollapsed && (
+              <div className="mt-6 pt-4 border-t border-border/10">
+                <span className="text-[8px] font-bold text-muted-foreground/30 uppercase tracking-[0.2em] block whitespace-nowrap">
+                  copyright @ CompassFrameworks UG z.n. 2026
+                </span>
+              </div>
+            )}
           </div>
         </aside>
 

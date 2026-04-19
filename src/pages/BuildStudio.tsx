@@ -19,9 +19,13 @@ import {
     AlertTriangle,
     Flag,
     Plus,
-    Bot
+    Bot,
+    PlusCircle,
+    GripVertical,
+    Library
 } from 'lucide-react';
-import { Workshop, MaturityScoreCategory } from '@/types';
+import { Workshop, MaturityScoreCategory, Blueprint } from '@/types';
+import { MONDAY_READY_BLUEPRINTS } from '@/constants';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
@@ -63,6 +67,7 @@ export default function BuildStudio({ workshop, onUpdate }: BuildStudioProps) {
   const [currentStep, setCurrentStep] = useState<StepId>('identity');
   const [localWorkshop, setLocalWorkshop] = useState<Workshop | null>(workshop);
   const [copilotData, setCopilotData] = useState<CopilotResponse | null>(null);
+  const [leftPanel, setLeftPanel] = useState<'path' | 'library'>('path');
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [docSummary, setDocSummary] = useState('');
   const [isSummarizing, setIsSummarizing] = useState(false);
@@ -102,6 +107,29 @@ export default function BuildStudio({ workshop, onUpdate }: BuildStudioProps) {
 
   const handleSave = () => {
     onUpdate({ ...localWorkshop, lastModified: new Date().toISOString() });
+  };
+
+  const applyBlueprint = (blueprint: Blueprint) => {
+    if (!localWorkshop) return;
+    const updated = { ...localWorkshop };
+    const category = blueprint.category;
+    const data = blueprint.data;
+
+    // Type-safe merging
+    if (category === 'outcome') {
+        updated.day3Outcome = { ...updated.day3Outcome, ...data };
+    } else if (category === 'methods') {
+        updated.methods = { ...updated.methods, ...data };
+    } else if (category === 'deliverables') {
+        updated.deliverables = { ...updated.deliverables, ...data };
+    } else if (category === 'audience') {
+        updated.audienceFit = { ...updated.audienceFit, ...data };
+    } else if (category === 'scope') {
+        updated.scope = { ...updated.scope, ...data };
+    }
+
+    setLocalWorkshop(updated);
+    onUpdate(updated);
   };
 
   const askCopilot = async () => {
@@ -173,32 +201,65 @@ export default function BuildStudio({ workshop, onUpdate }: BuildStudioProps) {
 
       <div className="flex-1 flex overflow-hidden">
         {/* Left Column: Product Path Navigation */}
-        <nav className="w-[200px] border-r-2 border-border bg-card flex flex-col shrink-0">
-          <div className="p-4 border-b border-border/5 bg-foreground/5">
-             <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest block italic">Product Path</span>
-          </div>
-          <ScrollArea className="flex-1">
-            <div className="py-2">
-              {STEPS.map((step) => (
-                <button
-                  key={step.id}
-                  onClick={() => setCurrentStep(step.id)}
+        <nav className="w-[240px] border-r-2 border-border bg-card flex flex-col shrink-0">
+          <div className="flex border-b border-border">
+              <button 
+                  onClick={() => setLeftPanel('path')}
                   className={cn(
-                    "w-full flex items-center justify-between px-6 py-3.5 text-[10px] font-black uppercase tracking-widest transition-all text-left",
-                    currentStep === step.id 
-                      ? "bg-background text-foreground border-r-4 border-accent italic" 
-                      : "text-muted-foreground hover:text-foreground hover:bg-background/30"
+                      "flex-1 py-3 text-[10px] font-black uppercase tracking-widest transition-all",
+                      leftPanel === 'path' ? "bg-background text-foreground" : "bg-foreground/5 text-foreground/40"
                   )}
-                >
-                  <div className="flex items-center gap-3">
-                    <step.icon className={cn("h-4 w-4 shrink-0", currentStep === step.id ? "text-accent" : "text-muted-foreground/30")} />
-                    <span className="truncate">{step.label}</span>
-                  </div>
-                  <div className={cn("h-2 w-2 rounded-full", getStepStatus(step.id).replace('text-', 'bg-'))} />
-                </button>
-              ))}
-            </div>
+              >
+                  Chapters
+              </button>
+              <button 
+                  onClick={() => setLeftPanel('library')}
+                  className={cn(
+                      "flex-1 py-3 text-[10px] font-black uppercase tracking-widest transition-all border-l border-border",
+                      leftPanel === 'library' ? "bg-background text-foreground" : "bg-foreground/5 text-foreground/40"
+                  )}
+              >
+                  Library
+              </button>
+          </div>
+
+          <ScrollArea className="flex-1">
+            {leftPanel === 'path' ? (
+              <div className="py-2">
+                {STEPS.map((step) => (
+                  <button
+                    key={step.id}
+                    onClick={() => setCurrentStep(step.id)}
+                    className={cn(
+                      "w-full flex items-center justify-between px-6 py-3.5 text-[10px] font-black uppercase tracking-widest transition-all text-left",
+                      currentStep === step.id 
+                        ? "bg-background text-foreground border-r-4 border-accent italic" 
+                        : "text-muted-foreground hover:text-foreground hover:bg-background/30"
+                    )}
+                  >
+                    <div className="flex items-center gap-3">
+                      <step.icon className={cn("h-4 w-4 shrink-0", currentStep === step.id ? "text-accent" : "text-muted-foreground/30")} />
+                      <span className="truncate">{step.label}</span>
+                    </div>
+                    <div className={cn("h-2 w-2 rounded-full", getStepStatus(step.id).replace('text-', 'bg-'))} />
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="p-4 space-y-4">
+                  <div className="text-[9px] font-black uppercase tracking-widest text-foreground/40 italic mb-4">Monday-Ready Assets</div>
+                  {MONDAY_READY_BLUEPRINTS.map(bp => (
+                      <BlueprintCard 
+                          key={bp.id} 
+                          blueprint={bp} 
+                          onApply={() => applyBlueprint(bp)}
+                          active={currentStep === bp.category}
+                      />
+                  ))}
+              </div>
+            )}
           </ScrollArea>
+          
           <div className="p-6 border-t border-border">
               <Button onClick={handleSave} className="w-full h-10 bg-foreground text-background font-black uppercase tracking-widest shadow-[3px_3px_0px_0px_rgba(255,68,0,1)] hover:translate-y-px hover:shadow-none transition-all">
                   <Save className="h-4 w-4" /> Save Board
@@ -445,6 +506,40 @@ function HealthIndicator({ label, value, status }: { label: string, value: strin
     );
 }
 
+function BlueprintCard({ blueprint, onApply, active }: { blueprint: Blueprint, onApply: () => void, active: boolean }) {
+    const Icon = { Target, Zap, Box, Users, Layers }[blueprint.icon] || Info;
+
+    return (
+        <div 
+            draggable
+            onDragEnd={onApply}
+            className={cn(
+                "p-3 bg-background border-2 transition-all cursor-grab active:cursor-grabbing group",
+                active ? "border-accent shadow-[4px_4px_0px_0px_rgba(255,68,0,1)]" : "border-border hover:border-foreground/50 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.1)]"
+            )}
+        >
+            <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                    <Icon className={cn("h-3.5 w-3.5", active ? "text-accent" : "text-muted-foreground/50")} />
+                    <span className="text-[10px] font-black uppercase tracking-widest">{blueprint.title}</span>
+                </div>
+                <button onClick={onApply}>
+                    <PlusCircle className="h-3.5 w-3.5 text-foreground/20 group-hover:text-accent transition-colors" />
+                </button>
+            </div>
+            <p className="text-[9px] font-bold text-muted-foreground italic leading-tight mb-3">
+                {blueprint.description}
+            </p>
+            <div className="flex items-center justify-between">
+                <Badge className="bg-foreground/5 text-foreground/40 text-[8px] font-black uppercase tracking-widest px-1 py-0 rounded-none border-none">
+                    {blueprint.category}
+                </Badge>
+                <GripVertical className="h-3 w-3 text-foreground/10 group-hover:text-foreground/30" />
+            </div>
+        </div>
+    );
+}
+
 function ComparisonRow({ label, diff }: { label: string, diff: number }) {
     return (
         <div className="flex items-center justify-between">
@@ -563,6 +658,9 @@ function renderStepEditor(step: StepId, workshop: Workshop, onFieldChange: any, 
                                 placeholder="e.g. Kanban Kickoff"
                                 className="text-2xl font-black rounded-none border-2 border-foreground h-16"
                             />
+                            <p className="mt-2 text-[11px] font-bold text-muted-foreground italic leading-relaxed">
+                                Der Name ist das primäre Verkaufsargument. Er sollte aktivierend wirken und das Day-3 Versprechen bereits im Titel andeuten (z.B. "Kickoff", "Studio", "Launchpad").
+                            </p>
                         </FieldGroup>
                     </div>
                     <FieldGroup label="Description" description="Detailed context about the workshop purpose and background.">
@@ -613,10 +711,10 @@ function renderStepEditor(step: StepId, workshop: Workshop, onFieldChange: any, 
                             variant="card"
                         />
                         <ArrayFieldGroup 
-                            label="Sichtbar vorhanden ist dann ..." 
+                            label="Day-3 Artifacts (Sichtbare Ergebnisse)" 
                             items={workshop.day3Outcome.artifacts} 
                             onChange={val => onArrayChange('day3Outcome', 'artifacts', val)}
-                            placeholder="e.g. Kanban Board (physisch/digital)"
+                            placeholder="e.g. Visualized Kanban Board, WIP Limit Agreements, Class of Service definitions"
                             variant="card"
                         />
                         <ArrayFieldGroup 
@@ -645,17 +743,19 @@ function renderStepEditor(step: StepId, workshop: Workshop, onFieldChange: any, 
                         onChange={val => onArrayChange('scope', 'inScope', val)}
                         variant="card"
                     />
-                    <ArrayFieldGroup 
-                        label="Out of Scope" 
-                        items={workshop.scope.outOfScope} 
-                        onChange={val => onArrayChange('scope', 'outOfScope', val)}
-                        errorIfEmpty
-                        variant="card"
-                    />
-                    <div className="md:col-span-2">
-                        <p className="text-[11px] font-bold text-muted-foreground italic mb-6 px-4 py-3 bg-foreground/5 border-l-4 border-foreground/10">
+                    <div className="space-y-4">
+                        <ArrayFieldGroup 
+                            label="Out of Scope" 
+                            items={workshop.scope.outOfScope} 
+                            onChange={val => onArrayChange('scope', 'outOfScope', val)}
+                            errorIfEmpty
+                            variant="card"
+                        />
+                        <p className="text-[11px] font-bold text-muted-foreground italic px-4 leading-relaxed">
                             Clear scope boundaries prevent scope creep and ensure focus on the core Day-3 outcome.
                         </p>
+                    </div>
+                    <div className="md:col-span-2">
                         <ArrayFieldGroup 
                             label="Common False Assumptions" 
                             items={workshop.scope.falseAssumptions} 
