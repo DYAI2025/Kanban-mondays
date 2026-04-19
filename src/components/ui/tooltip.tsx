@@ -8,8 +8,12 @@ export function Tooltip({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-export function TooltipTrigger({ children, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
-  return <button {...props}>{children}</button>;
+export function TooltipTrigger({ children, type, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button type={type ?? 'button'} {...props}>
+      {children}
+    </button>
+  );
 }
 
 export function TooltipContent({ children }: { children: React.ReactNode; side?: 'left' | 'right' | 'top' | 'bottom' }) {
