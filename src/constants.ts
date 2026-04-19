@@ -49,6 +49,11 @@ export const REFERENCE_WORKSHOP: Workshop = {
     notIncluded: [
       'Full Agile Transformation',
       'Technical Tool Training'
+    ],
+    successCriteria: [
+      'Team has a defined board design and WIP limits',
+      'Positive feedback on the "penny game" simulation',
+      'First backlog items are mapped to the new board'
     ]
   },
   audienceFit: {

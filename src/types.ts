@@ -61,6 +61,7 @@ export interface Workshop {
     artifacts: string[];
     decisions: string[];
     notIncluded: string[];
+    successCriteria: string[]; // Added
   };
   
   audienceFit: {
