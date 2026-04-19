@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "start": "node server.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.0",
@@ -41,5 +42,9 @@
     "tsx": "^4.21.0",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
+  },
+  "engines": {
+    "node": ">=20.19.0",
+    "npm": ">=10"
   }
 }
