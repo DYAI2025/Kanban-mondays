@@ -8,8 +8,7 @@ import {
     Send, 
     CheckCircle,
     Layout,
-    FileSearch,
-    ClipboardCheck
+    FileSearch
 } from 'lucide-react';
 import { Workshop } from '@/types';
 import { Button } from '@/components/ui/button';
@@ -39,11 +38,10 @@ export default function AssetStudio({ workshop }: AssetStudioProps) {
   const [summary, setSummary] = useState<string>('');
   const [isSummarizing, setIsSummarizing] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
-  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'error'>('idle');
 
   if (!workshop) return <NoWorkshopSelected />;
 
-  const ai = new GoogleGenAI({ apiKey: (import.meta as any)?.env?.VITE_GEMINI_API_KEY || (typeof process !== 'undefined' ? process.env?.GEMINI_API_KEY : '') });
+  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
   const model = "gemini-3-flash-preview";
 
   const generateAsset = async () => {
@@ -83,30 +81,6 @@ export default function AssetStudio({ workshop }: AssetStudioProps) {
     setShowSummary(true);
     setIsSummarizing(false);
   };
-
-  const handleCopy = async () => {
-    if (!generatedContent) return;
-    try {
-      await navigator.clipboard.writeText(generatedContent);
-      setCopyState('copied');
-      setTimeout(() => setCopyState('idle'), 1800);
-    } catch (error) {
-      setCopyState('error');
-      setTimeout(() => setCopyState('idle'), 1800);
-    }
-  };
-
-  const handleDownloadMarkdown = () => {
-    if (!generatedContent) return;
-    const blob = new Blob([generatedContent], { type: 'text/markdown;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${workshop.name.replace(/\s+/g, '_').toLowerCase()}_${selectedType}.md`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
 
   return (
     <div className="flex-1 flex overflow-hidden bg-background">
@@ -172,36 +146,13 @@ export default function AssetStudio({ workshop }: AssetStudioProps) {
                     >
                         {isSummarizing ? '...' : <><FileSearch className="h-4 w-4 mr-2" /> Summary</>}
                     </Button>
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleCopy}
-                        disabled={!generatedContent}
-                        className="h-10 px-4 rounded-none font-black uppercase tracking-widest text-[10px] hover:bg-foreground hover:text-background transition-all"
-                    >
-                        {copyState === 'copied' ? <><ClipboardCheck className="h-4 w-4 mr-2" /> Copied</> : copyState === 'error' ? <><Copy className="h-4 w-4 mr-2" /> Retry</> : <><Copy className="h-4 w-4 mr-2" /> Copy</>}
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleDownloadMarkdown}
-                        disabled={!generatedContent}
-                        className="h-10 px-4 rounded-none font-black uppercase tracking-widest text-[10px] hover:bg-foreground hover:text-background transition-all"
-                    ><Download className="h-4 w-4 mr-2" /> .md</Button>
+                    <Button variant="ghost" size="sm" className="h-10 px-4 rounded-none font-black uppercase tracking-widest text-[10px] hover:bg-foreground hover:text-background transition-all"><Copy className="h-4 w-4 mr-2" /> Copy</Button>
+                    <Button variant="ghost" size="sm" className="h-10 px-4 rounded-none font-black uppercase tracking-widest text-[10px] hover:bg-foreground hover:text-background transition-all"><Download className="h-4 w-4 mr-2" /> PDF</Button>
                 </div>
              </header>
 
              <ScrollArea className="flex-1 p-12 lg:p-20">
                  <div className="max-w-4xl mx-auto space-y-12">
-                    <Card className="border-2 border-foreground/10 bg-foreground/5 p-4 rounded-none">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-foreground/60 mb-2">Asset Studio Anleitung</p>
-                        <ol className="text-xs font-bold text-foreground/70 space-y-1 list-decimal pl-4">
-                          <li>Asset-Typ links auswählen.</li>
-                          <li>Mit <span className="font-black">Build Asset</span> generieren.</li>
-                          <li>Optional mit <span className="font-black">Summary</span> verdichten.</li>
-                          <li>Per <span className="font-black">Copy</span> oder <span className="font-black">.md</span> direkt weiterverwenden.</li>
-                        </ol>
-                    </Card>
                     {showSummary && summary && (
                         <Card className="border-4 border-accent bg-accent/5 p-8 rounded-none animate-in slide-in-from-top-4 duration-500 relative">
                             <Button 

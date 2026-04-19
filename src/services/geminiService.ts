@@ -1,18 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 import { Workshop } from '../types';
 
-function getGeminiApiKey(): string {
-  const viteKey = (import.meta as any)?.env?.VITE_GEMINI_API_KEY;
-  if (viteKey) return viteKey;
-
-  if (typeof process !== 'undefined' && process.env?.GEMINI_API_KEY) {
-    return process.env.GEMINI_API_KEY;
-  }
-
-  return '';
-}
-
-const ai = new GoogleGenAI({ apiKey: getGeminiApiKey() });
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 const model = "gemini-3-flash-preview";
 
 export interface CopilotResponse {
